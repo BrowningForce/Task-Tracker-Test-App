@@ -1,4 +1,4 @@
-const db = require('../../db');
+const db = require('../db');
 
 const findByUserId = (id) => {
   const query = `

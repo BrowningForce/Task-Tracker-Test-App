@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const helmet = require('helmet');
-const db = require('../db');
+const db = require('./db');
 
 db.query(
   `CREATE TABLE IF NOT EXISTS users (
@@ -40,17 +40,17 @@ db.query(
 );
 // db.end();
 const app = express();
-app.use(helmet());
+// app.use(helmet());
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
     extended: true,
-  })
+  }),
 );
 
-app.use(require('../routes/auth'));
-app.use('/tasks', require('../routes/tasks'));
-app.use('/users', require('../routes/users'));
+app.use(require('./routes/auth'));
+app.use('/tasks', require('./routes/tasks'));
+app.use('/users', require('./routes/users'));
 
 app.get('/', (req, res) => {
   res.json({
