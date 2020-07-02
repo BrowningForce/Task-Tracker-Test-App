@@ -7,10 +7,10 @@ const generateUserToken = (user) => {
   const timestamp = new Date().getTime();
   return jwt.encode(
     {
-      sub: user.id,
+      sub: user.user_id,
       iat: timestamp,
     },
-    process.env.SECRET
+    process.env.SECRET,
   );
 };
 

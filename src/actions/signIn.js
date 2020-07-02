@@ -3,8 +3,8 @@ const db = require('../db');
 const findByUserId = (id) => {
   const query = `
     SELECT *
-    FROM USERS
-    WHERE id=$1`;
+    FROM users
+    WHERE user_id=$1`;
 
   return db.oneOrNone(query, [id]);
 };

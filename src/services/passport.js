@@ -1,9 +1,10 @@
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
-const { ExtractJwt } = require('passport-jwt').ExtractJwt;
+// eslint-disable-next-line prefer-destructuring
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const LocalStrategy = require('passport-local');
 const bcrypt = require('bcrypt');
-const { findUserById, verifyUser } = require('../actions/signIn');
+const { findByUserId, verifyUser } = require('../actions/signIn');
 require('dotenv').config();
 
 // Create local strategy
@@ -23,18 +24,17 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
       .catch((err) => done(err, false));
   });
 });
-
 // setup options for jwt strategy
 
 const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.SECRET,
 };
 
 // create jwt strategy
 
 const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
-  return findUserById(payload.sub)
+  return findByUserId(payload.sub)
     .then((foundUser) => {
       if (foundUser) {
         return done(null, foundUser);
