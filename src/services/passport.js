@@ -34,14 +34,15 @@ const jwtOptions = {
 // create jwt strategy
 
 const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
-  return findByUserId(payload.sub)
-    .then((foundUser) => {
-      if (foundUser) {
-        return done(null, foundUser);
-      }
-      return done(null, false);
-    })
-    .catch((err) => done(err, false));
+  try {
+    const foundUser = findByUserId(payload.sub);
+    if (foundUser) {
+      return done(null, foundUser);
+    }
+    return done(null, false);
+  } catch (error) {
+    return done(error, false);
+  }
 });
 
 passport.use(jwtLogin);

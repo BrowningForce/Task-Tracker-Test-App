@@ -1,7 +1,8 @@
 const jwt = require('jwt-simple');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
-const { createUser } = require('../actions/signUp');
+const users = require('./user.controller');
+// const { createUser } = require('../actions/signUp');
 
 const generateUserToken = (user) => {
   const timestamp = new Date().getTime();
@@ -10,7 +11,7 @@ const generateUserToken = (user) => {
       sub: user.user_id,
       iat: timestamp,
     },
-    process.env.SECRET,
+    process.env.SECRET
   );
 };
 
@@ -25,21 +26,37 @@ const signUp = (req, res, next) => {
   const saltRounds = 12;
 
   if (!email || !password) {
-    res.status(422).send({
+    res.status(422).json({
       error: 'You must provide both email and password',
     });
+    return;
+  }
+
+  if (!(/\S+@\S+\.\S+/.test(email))) {
+    res.status(422).json({
+      error: 'You must provide email address in the following format: "email@example.com"',
+    });
+    return;
   }
 
   bcrypt
     .hash(password, saltRounds)
     .then(async (hash) => {
       try {
-        const newUser = await createUser(firstName, lastName, email, hash);
+        const newUser = await users.create({
+          firstName,
+          lastName,
+          email,
+          hash,
+        });
         res.json({ token: generateUserToken(newUser) });
         console.log(newUser);
       } catch (error) {
         console.log(error);
-        res.json({ error: 'Error saving user to database' });
+        res.status(500).json({
+          error: 'Error saving user to database',
+          errorMessage: error.message,
+        });
       }
     })
     .catch((err) => next(err));

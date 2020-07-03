@@ -4,6 +4,10 @@ const Authentication = require('../controllers/authentication');
 
 const requireSignIn = passport.authenticate('local', { session: false });
 
+router.get('/', (req, res) => {
+  res.redirect('auth/login');
+});
+
 router.get('/signup', (req, res) => {
   res.json({
     message: 'signup route',

@@ -8,7 +8,7 @@ const passportService = require('../services/passport');
 
 const requireAuth = passport.authenticate('jwt', {
   session: false,
-  failureRedirect: '/auth/login',
+  failureRedirect: '/api/auth',
 });
 
 const routes = express.Router();

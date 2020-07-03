@@ -1,13 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const { createUsersTable } = require('./actions/createUsersTable');
-const { createTasksTable } = require('./actions/createTasksTable');
+const cors = require('cors');
+const db = require('./models');
+const routes = require('./routes');
 
-createUsersTable();
-createTasksTable();
+db.sequelize.sync().then(() => console.log('DB connected.'));
+// db.sequelize.sync({ force: true }).then(() => {
+//   console.log('Drop and resync db.');
+// });
+
+const corsOptions = {
+  origin: 'http://localhost:3000',
+};
 
 const app = express();
+app.use(cors(corsOptions));
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(
@@ -16,10 +24,13 @@ app.use(
   }),
 );
 
-app.use('/api', require('./routes'));
+app.use('/api', routes);
 
-const port = process.env.PORT || 1337;
+app.get('/', (req, res) => {
+  res.redirect('/api');
+});
+const PORT = process.env.PORT || 1337;
 
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });

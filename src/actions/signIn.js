@@ -1,21 +1,11 @@
-const db = require('../db');
+const users = require('../controllers/user.controller');
 
 const findByUserId = (id) => {
-  const query = `
-    SELECT *
-    FROM users
-    WHERE user_id=$1`;
-
-  return db.oneOrNone(query, [id]);
+  return users.findByUserId(id);
 };
 
 const verifyUser = (email) => {
-  const query = `
-    SELECT *
-    FROM users
-    WHERE email=$1`;
-
-  return db.oneOrNone(query, [email]);
+  return users.findByEmail(email);
 };
 
 module.exports = { findByUserId, verifyUser };
