@@ -2,15 +2,11 @@ module.exports = (sequelize, Sequelize) => {
   const Task = sequelize.define('task', {
     title: {
       allowNull: false,
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(100),
     },
     description: {
       allowNull: false,
-      type: Sequelize.STRING,
-    },
-    author: {
-      allowNull: false,
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
     },
     assignee: {
       allowNull: false,

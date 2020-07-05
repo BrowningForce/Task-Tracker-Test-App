@@ -2,9 +2,9 @@ module.exports = (sequelize, Sequelize) => {
   const User = sequelize.define('user', {
     user_id: {
       allowNull: false,
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
-      type: Sequelize.UUID,
-      defaultValue: Sequelize.UUIDV4,
     },
     first_name: {
       allowNull: false,
@@ -16,6 +16,7 @@ module.exports = (sequelize, Sequelize) => {
     },
     email: {
       allowNull: false,
+      unique: true,
       type: Sequelize.STRING(100),
     },
     password: {

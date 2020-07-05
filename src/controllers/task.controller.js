@@ -1,7 +1,9 @@
 const db = require('../models');
 
 const Task = db.tasks;
+const User = db.users;
 const { getUserId } = require('../actions/getUserId');
+const { sequelize } = require('../models');
 
 // Create and Save a new Task
 exports.create = (req, res) => {
@@ -36,23 +38,45 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Task from the database.
-exports.findAll = (req, res) => {
-  Task.findAll({
-    where: {},
-  })
-    .then((tasks) => {
-      res.json({
-        tasks,
-      });
-    })
-    .catch((err) =>
-      res.status(500).json({
-        message: err.message || 'Could not retrieve tasks',
-      })
-    );
+exports.findAll = () => {
+  return Task.findAll()
+    .then((tasks) => tasks)
+    .catch((err) => err.message);
 };
 
-// Find a single User with an id
+exports.findByStatus = (status) => {
+  return Task.findAll({
+    where: {
+      status,
+    },
+  })
+    .then((tasks) => tasks)
+    .catch((err) => err.message);
+};
+
+exports.orderByUserCreationDate = async (orderDirection) => {
+  try {
+    const tasks = await Task.findAll({
+      include: User,
+      order: [
+        [
+          {
+            model: User,
+            as: 'author',
+          },
+          'createdAt',
+          orderDirection,
+        ],
+      ],
+    });
+
+    return tasks;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+// Find a single Task with an id
 exports.findOne = (req, res) => {
   const { taskId } = req.params;
 
@@ -67,20 +91,24 @@ exports.findOne = (req, res) => {
     });
 };
 
-// Update a User by the id in the request
+// Update a Task by the id in the request
 exports.update = async (req, res) => {
   const task = await Task.findByPk(req.params.taskId);
   const authorId = task.author;
-  const currentUserId = getUserId(req.headers.authorization);
+  const currentUserId = Number.parseInt(
+    getUserId(req.headers.authorization),
+    10
+  );
 
   if (currentUserId === authorId) {
     Task.update(req.body, {
       returning: true,
       where: { id: req.params.taskId },
     })
-      .then(() => {
+      .then((updatedTask) => {
         res.json({
           message: 'Task was updated successfully.',
+          updatedTask: updatedTask[1],
         });
       })
       .catch((err) => {

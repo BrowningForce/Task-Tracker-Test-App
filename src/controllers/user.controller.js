@@ -24,7 +24,7 @@ exports.create = async ({ firstName, lastName, email, hash }) => {
 
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
-  const { page } = req.params;
+  const { page } = req.query;
   const resultsPerPage = 10;
   const offset = (page - 1) * resultsPerPage;
 
