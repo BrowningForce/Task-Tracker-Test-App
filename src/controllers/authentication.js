@@ -2,7 +2,6 @@ const jwt = require('jwt-simple');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const users = require('./user.controller');
-// const { createUser } = require('../actions/signUp');
 
 const generateUserToken = (user) => {
   const timestamp = new Date().getTime();
@@ -11,7 +10,7 @@ const generateUserToken = (user) => {
       sub: user.user_id,
       iat: timestamp,
     },
-    process.env.SECRET
+    process.env.SECRET,
   );
 };
 
@@ -22,8 +21,14 @@ const signIn = (req, res, next) => {
 };
 
 const signUp = (req, res, next) => {
-  const { firstName, lastName, email, password } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+  } = req.body;
   const saltRounds = 12;
+  const regExp = /\S+@\S+\.\S+/;
 
   if (!email || !password) {
     res.status(422).json({
@@ -32,7 +37,7 @@ const signUp = (req, res, next) => {
     return;
   }
 
-  if (!(/\S+@\S+\.\S+/.test(email))) {
+  if (!regExp.test(email)) {
     res.status(422).json({
       error: 'You must provide email address in the following format: "email@example.com"',
     });
@@ -50,9 +55,7 @@ const signUp = (req, res, next) => {
           hash,
         });
         res.json({ token: generateUserToken(newUser) });
-        console.log(newUser);
       } catch (error) {
-        console.log(error);
         res.status(500).json({
           error: 'Error saving user to database',
           errorMessage: error.message,

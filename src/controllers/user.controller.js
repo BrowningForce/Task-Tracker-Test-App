@@ -4,7 +4,12 @@ const User = db.users;
 const { getUserId } = require('../actions/getUserId');
 
 // Create and Save a new User
-exports.create = async ({ firstName, lastName, email, hash }) => {
+exports.create = async ({
+  firstName,
+  lastName,
+  email,
+  hash,
+}) => {
   // Create a User
   const user = {
     first_name: firstName,
@@ -63,7 +68,7 @@ exports.findOne = (req, res) => {
 exports.findByUserId = (id) => {
   return User.findByPk(id)
     .then((user) => user)
-    .catch((err) => console.log(err));
+    .catch((err) => err.message);
 };
 
 exports.findByEmail = (email) => {
@@ -73,7 +78,7 @@ exports.findByEmail = (email) => {
     },
   })
     .then((user) => user)
-    .catch((err) => console.log(err));
+    .catch((err) => err.message);
 };
 
 // Update a User by the id in the request

@@ -1,0 +1,82 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Task Tracker Test App API server.",
+    "version": "1.0.0",
+    "title": "Task Tracker API"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api/v1",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/auth/signup": {
+      "get": {
+        "summary": "Get signup route",
+        "responses": {
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create user and save entity to database",
+        "operationId": "addUser",
+        "responses": {
+          "422": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "get": {
+        "summary": "Get login route",
+        "responses": {
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "User login route",
+        "operationId": "login",
+        "responses": {
+          "401": {
+            "description": "Couldn't authorize user"
+          }
+        },
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "example": {}
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/users": {},
+    "/tasks": {}
+  }
+}

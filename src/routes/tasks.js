@@ -1,6 +1,10 @@
 const router = require('express').Router();
 const tasks = require('../controllers/task.controller');
 
+/**
+ * @swagger
+ *
+ */
 router.get('/', async (req, res) => {
   if (req.query.status) {
     try {
@@ -18,7 +22,7 @@ router.get('/', async (req, res) => {
   } else if (req.query.orderByUserCreatedDate) {
     try {
       const taskList = await tasks.orderByUserCreationDate(
-        req.query.orderByUserCreatedDate
+        req.query.orderByUserCreatedDate,
       );
 
       res.json({

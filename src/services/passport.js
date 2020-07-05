@@ -11,19 +11,28 @@ require('dotenv').config();
 
 const localOptions = { usernameField: 'email' };
 
-const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
-  return verifyUser(email).then((validUser) => {
-    bcrypt
-      .compare(password, validUser.password)
-      .then((validPassword) => {
-        if (validPassword) {
-          return done(null, validUser);
+const localLogin = new LocalStrategy(
+  localOptions,
+  async (email, password, done) => {
+    return verifyUser(email)
+      .then((validUser) => {
+        if (!validUser) {
+          return done(null, false);
         }
-        return done(null, false);
+
+        return bcrypt
+          .compare(password, validUser.password)
+          .then((validPassword) => {
+            if (validPassword) {
+              return done(null, validUser);
+            }
+            return done(null, false);
+          })
+          .catch((err) => done(err, false));
       })
-      .catch((err) => done(err, false));
-  });
-});
+      .catch((err) => err.message);
+  },
+);
 // setup options for jwt strategy
 
 const jwtOptions = {

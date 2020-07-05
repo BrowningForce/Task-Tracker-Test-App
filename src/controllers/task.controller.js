@@ -3,7 +3,6 @@ const db = require('../models');
 const Task = db.tasks;
 const User = db.users;
 const { getUserId } = require('../actions/getUserId');
-const { sequelize } = require('../models');
 
 // Create and Save a new Task
 exports.create = (req, res) => {
@@ -114,6 +113,7 @@ exports.update = async (req, res) => {
       .catch((err) => {
         res.status(500).json({
           message: `Error updating Task with id ${req.params.taskId}`,
+          error: err.message,
         });
       });
   } else {
@@ -139,6 +139,7 @@ exports.delete = async (req, res) => {
       .catch((err) => {
         res.status(500).json({
           message: `Could not delete User with id ${req.params.taskId}`,
+          error: err.message,
         });
       });
   } else {

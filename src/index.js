@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
+const swaggerUI = require('swagger-ui-express');
+const swaggerOptions = require('./config/swagger.json');
 const db = require('./models');
 const routes = require('./routes');
 
@@ -15,6 +17,8 @@ const corsOptions = {
 };
 
 const app = express();
+
+// app.options('*', cors());
 app.use(cors(corsOptions));
 app.use(helmet());
 app.use(bodyParser.json());
@@ -24,10 +28,11 @@ app.use(
   }),
 );
 
-app.use('/api', routes);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerOptions));
+app.use('/api/v1', routes);
 
 app.get('/', (req, res) => {
-  res.redirect('/api');
+  res.redirect('/api/v1');
 });
 const PORT = process.env.PORT || 1337;
 
