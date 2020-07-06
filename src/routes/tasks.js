@@ -1,10 +1,6 @@
 const router = require('express').Router();
 const tasks = require('../controllers/task.controller');
 
-/**
- * @swagger
- *
- */
 router.get('/', async (req, res) => {
   if (req.query.status) {
     try {

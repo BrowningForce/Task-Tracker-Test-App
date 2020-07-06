@@ -1,5 +1,22 @@
 {
   "swagger": "2.0",
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "User unauthorized"
+      },
+      "InternalError": {
+        "description":"Internal server error"
+      }
+    }
+  },
   "info": {
     "description": "Task Tracker Test App API server.",
     "version": "1.0.0",
@@ -7,15 +24,9 @@
   },
   "host": "localhost:3000",
   "basePath": "/api/v1",
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/auth/signup": {
       "get": {
@@ -35,16 +46,46 @@
           },
           "500": {
             "description": "Internal server error"
+          },
+          "200": {
+            "description": "OK, user entity saved"
           }
-        }
+        },
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "example": {}
+              }
+            }
+          }
+        ]
       }
     },
     "/auth/login": {
       "get": {
-        "summary": "Get login route",
+        "summary": "Get form for user login",
         "responses": {
           "500": {
-            "description": "Internal server error"
+            "$ref": "#/components/responses/InternalError"
+          },
+          "200": {
+            "description": "OK, render login form"
           }
         }
       },
@@ -54,6 +95,9 @@
         "responses": {
           "401": {
             "description": "Couldn't authorize user"
+          },
+          "200": {
+            "description": "OK, returns authorization token"
           }
         },
         "parameters": [
@@ -76,7 +120,32 @@
         ]
       }
     },
-    "/users": {},
+
+    "/users": {
+        "get": {
+          "summary": "Get list of all users",
+          "responses": {
+            "500": {
+              "$ref": "#/components/responses/InternalError"
+            },
+            "401": {
+              "$ref": "#/components/responses/UnauthorizedError"
+            },
+            "200": {
+              "description": "OK, return list of users"
+            }
+          },
+          "security": {
+            "bearerAuth": []
+          }
+        }
+    },
+    "/users/:userId": {
+      "get": {},
+      "put": {},
+      "delete": {}
+    },
+
     "/tasks": {}
   }
 }
