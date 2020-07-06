@@ -1,18 +1,18 @@
-version: '3.8'
+version: '3'
 services:
-  app:
+  web:
     container_name: tasktracker-postgresql
     image: tasktracker-postgresql
-    build: ./
+    build: .
     ports:
-      - '49160:3000'
-    depends_on:
+      - '3000:3000'
+    links: 
       - dbpostgresql
   dbpostgresql:
-    image: postgres
+    image: postgres:12.3
     ports:
       - '5432:5432'
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=taskTracker
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: '1'
+      POSTGRES_DB: 'taskTracker'

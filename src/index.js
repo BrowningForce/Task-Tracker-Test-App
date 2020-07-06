@@ -7,7 +7,7 @@ const swaggerOptions = require('./config/swagger.json');
 const db = require('./models');
 const routes = require('./routes');
 
-db.sequelize.sync().then(() => console.log('DB connected.'));
+db.sequelize.sync().then(() => console.log('DB connected.')).catch((err) => console.log(err));
 // db.sequelize.sync({ force: true }).then(() => {
 //   console.log('Drop and resync db.');
 // });

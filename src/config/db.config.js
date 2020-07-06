@@ -1,10 +1,10 @@
 require('dotenv').config();
 
 module.exports = {
-  HOST: 'localhost',
-  USER: process.env.DBUSER,
-  PASSWORD: process.env.DBPASSWORD,
-  DB: 'taskTracker',
+  HOST: 'host.docker.internal',
+  USER: process.env.POSTGRES_USER,
+  PASSWORD: process.env.POSTGRES_PASSWORD,
+  DB: process.env.POSTGRES_DB,
   dialect: 'postgres',
   pool: {
     max: 5,
