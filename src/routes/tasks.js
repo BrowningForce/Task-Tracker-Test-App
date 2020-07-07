@@ -15,10 +15,10 @@ router.get('/', async (req, res) => {
         error: error.message,
       });
     }
-  } else if (req.query.orderByUserCreatedDate) {
+  } else if (req.query.byUserCreationDate) {
     try {
       const taskList = await tasks.orderByUserCreationDate(
-        req.query.orderByUserCreatedDate,
+        req.query.byUserCreationDate,
       );
 
       res.json({

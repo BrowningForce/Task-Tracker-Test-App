@@ -13,7 +13,7 @@
         "description": "User unauthorized"
       },
       "InternalError": {
-        "description":"Internal server error"
+        "description": "Internal server error"
       }
     }
   },
@@ -24,9 +24,15 @@
   },
   "host": "localhost:3000",
   "basePath": "/api/v1",
-  "schemes": ["http"],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
     "/auth/signup": {
       "get": {
@@ -41,14 +47,14 @@
         "summary": "Create user and save entity to database",
         "operationId": "addUser",
         "responses": {
+          "200": {
+            "description": "OK, user entity saved"
+          },
           "422": {
             "description": "Invalid input"
           },
           "500": {
             "description": "Internal server error"
-          },
-          "200": {
-            "description": "OK, user entity saved"
           }
         },
         "parameters": [
@@ -81,11 +87,11 @@
       "get": {
         "summary": "Get form for user login",
         "responses": {
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          },
           "200": {
             "description": "OK, render login form"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
           }
         }
       },
@@ -93,11 +99,11 @@
         "summary": "User login route",
         "operationId": "login",
         "responses": {
-          "401": {
-            "description": "Couldn't authorize user"
-          },
           "200": {
             "description": "OK, returns authorization token"
+          },
+          "401": {
+            "description": "Couldn't authorize user"
           }
         },
         "parameters": [
@@ -120,32 +126,352 @@
         ]
       }
     },
-
     "/users": {
-        "get": {
-          "summary": "Get list of all users",
-          "responses": {
-            "500": {
-              "$ref": "#/components/responses/InternalError"
-            },
-            "401": {
-              "$ref": "#/components/responses/UnauthorizedError"
-            },
-            "200": {
-              "description": "OK, return list of users"
-            }
+      "get": {
+        "summary": "Get list of all users",
+        "responses": {
+          "200": {
+            "description": "OK, return list of users"
           },
-          "security": {
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [
+          {
             "bearerAuth": []
           }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "type": "number",
+            "description": "Page number"
+          }
+        ]
+      }
+    },
+    "/users/{userId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "userId",
+          "required": true,
+          "type": "integer"
         }
+      ],
+      "get": {
+        "summary": "Get user by id",
+        "responses": {
+          "200": {
+            "description": "OK, return user info"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string",
+            "required": true
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update user info",
+        "responses": {
+          "200": {
+            "description": "OK, update user and return the entity"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "firstName": {
+                  "type": "string"
+                },
+                "lastName": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "example": {}
+              }
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string",
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete user with the given ID.",
+        "responses": {
+          "200": {
+            "description": "OK, user deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string",
+            "required": true
+          }
+        ]
+      }
     },
-    "/users/:userId": {
-      "get": {},
-      "put": {},
-      "delete": {}
+    "/tasks": {
+      "get": {
+        "summary": "Get list of all tasks",
+        "responses": {
+          "200": {
+            "description": "OK, return list of tasks"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "type": "string",
+            "description": "Show tasks with the given status"
+          },
+          {
+            "in": "query",
+            "name": "byUserCreationDate",
+            "type": "string",
+            "description": "Show tasks by user creation date (newer/older)"
+          }
+        ]
+      }
     },
-
-    "/tasks": {}
+    "/tasks/add": {
+      "post": {
+        "summary": "Add task",
+        "responses": {
+          "200": {
+            "description": "OK, task created and saved to database"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "example": {}
+              }
+            }
+          }
+        ]
+      }
+    },
+    "/tasks/{taskId}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "taskId",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "summary": "Get a task by its ID",
+        "responses": {
+          "200": {
+            "description": "OK, return task"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string",
+            "required": true
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update task info",
+        "responses": {
+          "200": {
+            "description": "OK, update task and return the entity"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "assignee": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "example": {}
+              }
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string",
+            "required": true
+          }
+        ]
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "OK, task with given ID is deleted"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        },
+        "summary": "Delete task with the given ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "type": "string",
+            "required": true
+          }
+        ]
+      }
+    }
   }
 }

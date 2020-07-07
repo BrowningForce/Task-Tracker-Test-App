@@ -29,11 +29,17 @@ exports.create = async ({
 
 // Retrieve all Users from the database.
 exports.findAll = (req, res) => {
-  const { page } = req.query;
+  const { page = 1 } = req.query;
   const resultsPerPage = 10;
   const offset = (page - 1) * resultsPerPage;
 
   User.findAll({
+    attributes: [
+      'user_id',
+      'first_name',
+      'last_name',
+      'email',
+    ],
     limit: resultsPerPage,
     offset,
   })
@@ -54,7 +60,13 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
   const id = req.params.userId;
 
-  User.findByPk(id)
+  User.findByPk(id, {
+    attributes: [
+      'first_name',
+      'last_name',
+      'email',
+    ],
+  })
     .then((user) => {
       res.json({ user });
     })
